@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head><!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H4VF7WNZRR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-H4VF7WNZRR');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniPro Ultimate Studio - Next-Gen Workspace Suite</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#070a12',
+                            card: 'rgba(15, 23, 42, 0.72)',
+                            accent: '#6366f1',
+                            cyan: '#06b6d4',
+                            magenta: '#ec4899',
+                            emerald: '#10b981',
+                            gold: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base Reset & Custom Cursor Prep */
+        * {
+            cursor: none !important; /* Force custom interactive cursor */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #070a12;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        /* Canvas Overlay & Background FX */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.35);
+            box-shadow: 0 20px 45px -10px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Interactive Custom Circle Cursor Elements */
+        #cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background-color: #06b6d4;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s ease, height 0.15s ease, background-color 0.15s ease;
+            box-shadow: 0 0 12px #06b6d4, 0 0 20px #06b6d4;
+        }
+
+        #cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid rgba(99, 102, 241, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.25s cubic-bezier(0.1, 0.8, 0.2, 1), 
+                        height 0.25s cubic-bezier(0.1, 0.8, 0.2, 1), 
+                        border-color 0.25s ease, 
+                        background-color 0.25s ease;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Hover states for Cursor */
+        body.cursor-hover #cursor-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #ec4899;
+            box-shadow: 0 0 15px #ec4899;
+        }
+
+        body.cursor-hover #cursor-ring {
+            width: 60px;
+            height: 60px;
+            border-color: rgba(236, 72, 153, 0.9);
+            background-color: rgba(236, 72, 153, 0.08);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(7, 10, 18, 0.8);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.8);
+        }
+
+        /* Range Sliders Styling */
+        input[type="range"] {
+            accent-color: #6366f1;
+        }
+
+        /* Active Navigation Button Highlight */
+        .nav-tab-active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.25) 0%, rgba(6, 182, 212, 0.15) 100%);
+            border-left: 3px solid #6366f1;
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col md:flex-row antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Custom Circle Cursor Elements -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Dynamic Canvas Background for Particles & Rotating Rings -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Mobile Header Bar -->
+    <header class="md:hidden flex items-center justify-between p-4 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800 sticky top-0 z-40">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-cyan-400 to-pink-500 p-0.5 shadow-lg shadow-indigo-500/30">
+                <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-indigo-400 font-black text-lg">
+                    ⚡
+                </div>
+            </div>
+            <span class="font-black text-base tracking-wider bg-gradient-to-r from-white via-slate-200 to-indigo-400 bg-clip-text text-transparent">
+                OmniPro <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-semibold">ULTIMATE</span>
+            </span>
+        </div>
+        <button id="mobile-menu-btn" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300">
+            <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-950/90 backdrop-blur-2xl border-r border-slate-800/80 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-out md:static md:h-screen">
+        
+        <!-- Logo & Branding -->
+        <div class="p-6 flex items-center justify-between border-b border-slate-800/80">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-cyan-400 to-pink-500 p-0.5 shadow-lg shadow-indigo-500/30">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-indigo-400 font-black text-xl">
+                        ⚡
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base tracking-wider bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+                        OmniPro <span class="text-[10px] px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-semibold">ULTIMATE</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400 font-medium">Next-Gen Workspace Suite</p>
+                </div>
+            </div>
+            <button id="close-sidebar-btn" class="md:hidden text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Global Quick Tool Search -->
+        <div class="px-4 pt-4 pb-2">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+                <input type="text" id="tool-search" placeholder="Search tool or utility..." class="w-full bg-slate-900/80 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500/60">
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-1" id="main-nav">
+            <button data-target="suite-ai" class="nav-btn nav-tab-active w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 transition-all text-xs font-semibold">
+                <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-sm w-5 text-center"></i>
+                <span class="truncate">AI & Writing Studio</span>
+            </button>
+            <button data-target="suite-seo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 transition-all text-xs font-semibold">
+                <i class="fa-solid fa-chart-line text-emerald-400 text-sm w-5 text-center"></i>
+                <span class="truncate">Text & SEO Analyzer</span>
+            </button>
+            <button data-target="suite-dev" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 transition-all text-xs font-semibold">
+                <i class="fa-solid fa-code text-cyan-400 text-sm w-5 text-center"></i>
+                <span class="truncate">Developer Power Hub</span>
+            </button>
+            <button data-target="suite-sec" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 transition-all text-xs font-semibold">
+                <i class="fa-solid fa-shield-halved text-amber-400 text-sm w-5 text-center"></i>
+                <span class="truncate">Security & Cryptography</span>
+            </button>
+            <button data-target="suite-design" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 transition-all text-xs font-semibold">
+                <i class="fa-solid fa-palette text-pink-400 text-sm w-5 text-center"></i>
+                <span class="truncate">Design & Palette Lab</span>
+            </button>
+            <button data-target="suite-kanban" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 transition-all text-xs font-semibold">
+                <i class="fa-solid fa-list-check text-rose-400 text-sm w-5 text-center"></i>
+                <span class="truncate">Focus & Task Board</span>
+            </button>
+            <button data-target="suite-math" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-800/60 transition-all text-xs font-semibold">
+                <i class="fa-solid fa-calculator text-violet-400 text-sm w-5 text-center"></i>
+                <span class="truncate">Math & Unit Utilities</span>
+            </button>
+        </nav>
+
+        <!-- Sidebar Engine Footer -->
+        <div class="p-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500 font-medium">
+            <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Studio Engine Active
+            </span>
+            <span>v4.0 Max</span>
+        </div>
+    </aside>
+
+    <!-- Main Content Workspace -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 z-10">
+
+        <!-- ================= SUITE 1: AI & WRITING STUDIO ================= -->
+        <section id="suite-ai" class="suite-section space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+                <div>
+                    <h2 class="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400"></i> AI & Writing Studio
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Generate refined AI prompt architectures, transform tone, and rephrase text.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Controls -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="glass-card p-5 rounded-2xl space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Prompt Objective / Template</label>
+                            <select id="ai-template-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                                <option value="custom">✨ Freeform Prompt Generator</option>
+                                <option value="blog">📝 Strategic Article Outline & Draft</option>
+                                <option value="email">📧 Executive Cold Email Proposal</option>
+                                <option value="code">💻 System Refactoring & Code Optimizer</option>
+                                <option value="social">🚀 Viral Social Media Hook & Thread</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Primary Subject / Core Idea</label>
+                            <input type="text" id="ai-topic" placeholder="e.g. Scalable Microservices in Node.js" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Target Tone & Style</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button data-tone="Professional" class="tone-btn px-2.5 py-2 rounded-lg text-xs font-semibold border border-indigo-500/40 bg-indigo-500/20 text-indigo-300">Professional</button>
+                                <button data-tone="Casual" class="tone-btn px-2.5 py-2 rounded-lg text-xs font-semibold border border-slate-800 bg-slate-900 text-slate-400">Casual</button>
+                                <button data-tone="Persuasive" class="tone-btn px-2.5 py-2 rounded-lg text-xs font-semibold border border-slate-800 bg-slate-900 text-slate-400">Persuasive</button>
+                            </div>
+                        </div>
+
+                        <button id="ai-generate-btn" class="w-full py-3 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all text-xs tracking-wider flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> GENERATE PROMPT & COPY
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Output Workspace -->
+                <div class="lg:col-span-7 space-y-3">
+                    <div class="glass-card p-5 rounded-2xl flex flex-col h-[420px]">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">AI Prompt Output Workspace</span>
+                            <div class="flex items-center gap-2">
+                                <button id="ai-copy-btn" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5">
+                                    <i class="fa-regular fa-copy"></i> Copy
+                                </button>
+                                <button id="ai-download-btn" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-download"></i> Export .txt
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="ai-output" class="w-full flex-1 bg-transparent border-0 resize-none text-slate-200 focus:outline-none text-xs leading-relaxed font-sans" placeholder="Generated result will appear here... Edit freely."></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SUITE 2: TEXT & SEO ANALYZER ================= -->
+        <section id="suite-seo" class="suite-section hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+                <div>
+                    <h2 class="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-chart-line text-emerald-400"></i> Advanced Text & SEO Analyzer
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Real-time stats, keyword density breakdowns, and text normalization tools.</p>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <div class="glass-card p-4 rounded-xl border-l-4 border-indigo-500">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Words</p>
+                    <p id="stat-words" class="text-2xl font-black text-white mt-1">0</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-l-4 border-cyan-500">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Characters</p>
+                    <p id="stat-chars" class="text-2xl font-black text-white mt-1">0</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-l-4 border-emerald-500">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Sentences</p>
+                    <p id="stat-sentences" class="text-2xl font-black text-white mt-1">0</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-l-4 border-amber-500">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Read Time</p>
+                    <p id="stat-read" class="text-2xl font-black text-white mt-1">0 min</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-l-4 border-pink-500 col-span-2 sm:col-span-1">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Readability</p>
+                    <p id="stat-score" class="text-2xl font-black text-white mt-1">100 / 100</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-8 space-y-3">
+                    <div class="glass-card p-4 rounded-2xl space-y-3">
+                        <div class="flex flex-wrap gap-2 pb-3 border-b border-slate-800/80">
+                            <button id="clean-upper" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300">UPPERCASE</button>
+                            <button id="clean-lower" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300">lowercase</button>
+                            <button id="clean-spaces" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20">Trim Spaces</button>
+                            <button id="clean-lines" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20">Remove Empty Lines</button>
+                        </div>
+                        <textarea id="seo-input" class="w-full h-80 bg-transparent border-0 resize-none text-slate-200 focus:outline-none text-xs leading-relaxed" placeholder="Type or paste copy here for instant analysis..."></textarea>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4">
+                    <div class="glass-card p-5 rounded-2xl h-full flex flex-col">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+                            <span>Top Keyword Density</span>
+                            <i class="fa-solid fa-chart-pie text-emerald-400"></i>
+                        </h3>
+                        <div class="flex-1 overflow-y-auto max-h-[320px]">
+                            <table class="w-full text-xs text-left">
+                                <thead>
+                                    <tr class="text-slate-500 border-b border-slate-800">
+                                        <th class="pb-2">Keyword</th>
+                                        <th class="pb-2 text-center">Count</th>
+                                        <th class="pb-2 text-right">Density</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="keyword-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+                                    <tr>
+                                        <td colspan="3" class="py-6 text-center text-slate-500 text-xs">No keywords analyzed yet</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SUITE 3: DEVELOPER POWER HUB ================= -->
+        <section id="suite-dev" class="suite-section hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+                <div>
+                    <h2 class="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-code text-cyan-400"></i> Developer Power Hub
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">JSON formatting, Base64/URL encoding, CSS Gradient Builder, and Regex engine.</p>
+                </div>
+            </div>
+
+            <div class="flex border-b border-slate-800/80 space-x-4">
+                <button data-sub="dev-json" class="dev-sub-tab pb-2 text-xs font-bold text-indigo-400 border-b-2 border-indigo-500">JSON Formatter</button>
+                <button data-sub="dev-encode" class="dev-sub-tab pb-2 text-xs font-bold text-slate-400 hover:text-slate-200">Encoders / Decoders</button>
+                <button data-sub="dev-gradient" class="dev-sub-tab pb-2 text-xs font-bold text-slate-400 hover:text-slate-200">CSS Gradient Builder</button>
+                <button data-sub="dev-regex" class="dev-sub-tab pb-2 text-xs font-bold text-slate-400 hover:text-slate-200">Regex Tester</button>
+            </div>
+
+            <!-- JSON Sub Tool -->
+            <div id="dev-json" class="dev-sub-content space-y-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="glass-card p-4 rounded-2xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-slate-400">RAW JSON INPUT</span>
+                            <div class="flex gap-2">
+                                <button id="json-format-btn" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold">Format</button>
+                                <button id="json-minify-btn" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold">Minify</button>
+                            </div>
+                        </div>
+                        <textarea id="json-input" class="w-full h-80 bg-slate-900/90 border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-200 focus:outline-none" placeholder='{"name": "OmniPro", "version": 4.0}'></textarea>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-slate-400">FORMATTED RESULT</span>
+                            <span id="json-status" class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-800 text-slate-400">Ready</span>
+                        </div>
+                        <textarea id="json-output" readonly class="w-full h-80 bg-slate-900/90 border border-slate-800 rounded-xl p-3 font-mono text-xs text-emerald-400 focus:outline-none" placeholder="Formatted JSON output..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Encoders Sub Tool -->
+            <div id="dev-encode" class="dev-sub-content hidden space-y-4">
+                <div class="glass-card p-5 rounded-2xl space-y-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2">INPUT DATA</label>
+                            <textarea id="encode-input" class="w-full h-40 bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none" placeholder="Enter string..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2">OUTPUT DATA</label>
+                            <textarea id="encode-output" readonly class="w-full h-40 bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-cyan-400 font-mono focus:outline-none" placeholder="Transformed output..."></textarea>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button id="btn-base64-enc" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold">Base64 Encode</button>
+                        <button id="btn-base64-dec" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold">Base64 Decode</button>
+                        <button id="btn-url-enc" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold">URL Encode</button>
+                        <button id="btn-url-dec" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold">URL Decode</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gradient Sub Tool -->
+            <div id="dev-gradient" class="dev-sub-content hidden space-y-4">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-6 glass-card p-5 rounded-2xl space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold text-slate-400">Color Stop 1</label>
+                                <input type="color" id="grad-c1" value="#6366f1" class="w-full h-10 rounded-lg cursor-pointer bg-transparent border-0 mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-400">Color Stop 2</label>
+                                <input type="color" id="grad-c2" value="#06b6d4" class="w-full h-10 rounded-lg cursor-pointer bg-transparent border-0 mt-1">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-400">
+                                <span>Angle</span>
+                                <span id="grad-deg-text">90°</span>
+                            </div>
+                            <input type="range" id="grad-deg" min="0" max="360" value="90" class="w-full mt-2">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400">CSS Output</label>
+                            <div class="flex gap-2 mt-1">
+                                <input type="text" id="grad-css" readonly class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-mono text-cyan-400">
+                                <button id="grad-copy-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-6 rounded-2xl h-64 border border-slate-800 shadow-2xl" id="grad-preview"></div>
+                </div>
+            </div>
+
+            <!-- Regex Sub Tool -->
+            <div id="dev-regex" class="dev-sub-content hidden space-y-4">
+                <div class="glass-card p-5 rounded-2xl space-y-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                        <div class="lg:col-span-8 space-y-3">
+                            <label class="block text-xs font-bold text-slate-400">REGEX PATTERN</label>
+                            <input type="text" id="regex-pattern" value="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-indigo-400 font-mono focus:outline-none">
+                            
+                            <label class="block text-xs font-bold text-slate-400">SAMPLE TEXT</label>
+                            <textarea id="regex-text" class="w-full h-36 bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none">Contact support@omnipro.io or sales@studio.org for info.</textarea>
+                            
+                            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                                <span id="regex-matches-count" class="text-xs font-bold text-emerald-400">2 matches found</span>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4 p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2 text-xs text-slate-400">
+                            <p class="font-bold text-slate-200 border-b border-slate-800 pb-1">Regex Quick Reference</p>
+                            <p><code class="text-indigo-400">\d</code> - Any Digit</p>
+                            <p><code class="text-indigo-400">\w</code> - Word Character</p>
+                            <p><code class="text-indigo-400">\s</code> - Whitespace</p>
+                            <p><code class="text-indigo-400">+</code> - One or More</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SUITE 4: SECURITY & CRYPTOGRAPHY ================= -->
+        <section id="suite-sec" class="suite-section hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+                <div>
+                    <h2 class="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-shield-halved text-amber-400"></i> Security & Cryptography Suite
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">High-entropy password generation, hash computation, and UUID v4 generators.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Password Generator -->
+                <div class="lg:col-span-6 glass-card p-5 rounded-2xl space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">Password & Key Generator</h3>
+                    <div class="relative">
+                        <input type="text" id="pass-output" readonly class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3.5 text-center font-mono text-sm font-bold text-amber-400 tracking-wider focus:outline-none" value="">
+                        <button id="pass-copy-btn" class="absolute right-2 top-2 bottom-2 px-3 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-bold">
+                            Copy
+                        </button>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-400 mb-1">
+                            <span>Length: <span id="pass-len-val" class="text-slate-200">18</span></span>
+                            <span id="pass-strength-label" class="text-amber-400">High Entropy</span>
+                        </div>
+                        <input type="range" id="pass-len" min="8" max="64" value="18" class="w-full accent-amber-400">
+                    </div>
+
+                    <button id="pass-gen-btn" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs">Generate New Key</button>
+                </div>
+
+                <!-- Web Crypto & UUID -->
+                <div class="lg:col-span-6 glass-card p-5 rounded-2xl space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">Web Crypto SHA-256 & UUID v4</h3>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-1">Compute SHA-256 Hash</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="hash-input" placeholder="Input string..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                            <button id="hash-btn" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold">Compute</button>
+                        </div>
+                        <input type="text" id="hash-output" readonly placeholder="SHA-256 output..." class="w-full mt-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-[11px] font-mono text-cyan-400 focus:outline-none">
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-800/80">
+                        <label class="block text-xs font-bold text-slate-400 mb-1">Batch UUID v4 Generator</label>
+                        <button id="uuid-gen-btn" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold mb-2">Generate 3 x UUID v4</button>
+                        <textarea id="uuid-output" readonly class="w-full h-20 bg-slate-900 border border-slate-800 rounded-xl p-2 font-mono text-[11px] text-emerald-400 focus:outline-none" placeholder="UUIDs..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SUITE 5: DESIGN & PALETTE LAB ================= -->
+        <section id="suite-design" class="suite-section hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+                <div>
+                    <h2 class="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-palette text-pink-400"></i> Design & Palette Lab
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Generate dynamic 5-color palettes with 1-click clipboard integration.</p>
+                </div>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-pink-400">Interactive Color Palette Generator</h3>
+                    <button id="palette-gen-btn" class="px-4 py-2 bg-pink-600 hover:bg-pink-500 text-white rounded-xl text-xs font-bold">Generate Palette</button>
+                </div>
+
+                <div id="palette-container" class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    <!-- Palette Cards Rendered Here -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SUITE 6: FOCUS & TASK KANBAN BOARD ================= -->
+        <section id="suite-kanban" class="suite-section hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+                <div>
+                    <h2 class="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-list-check text-rose-400"></i> Focus & Task Board
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Kanban workflow board synced with local storage and integrated Pomodoro timer.</p>
+                </div>
+                <button id="add-task-btn" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Add New Task
+                </button>
+            </div>
+
+            <!-- Pomodoro Timer Card -->
+            <div class="glass-card p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-full border-4 border-rose-500 flex items-center justify-center font-mono font-bold text-lg text-white" id="pomo-timer-display">
+                        25:00
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Pomodoro Focus Timer</h4>
+                        <p class="text-xs text-slate-500">25-minute deep work focus session</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="pomo-start-btn" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold">Start</button>
+                    <button id="pomo-pause-btn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold">Pause</button>
+                    <button id="pomo-reset-btn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold">Reset</button>
+                </div>
+            </div>
+
+            <!-- Kanban Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-4 rounded-2xl flex flex-col">
+                    <div class="pb-3 border-b border-slate-800 mb-3 flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase text-rose-400">To Do</span>
+                    </div>
+                    <div id="col-todo" class="space-y-3 min-h-[220px]"></div>
+                </div>
+                <div class="glass-card p-4 rounded-2xl flex flex-col">
+                    <div class="pb-3 border-b border-slate-800 mb-3 flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase text-amber-400">In Progress</span>
+                    </div>
+                    <div id="col-inprogress" class="space-y-3 min-h-[220px]"></div>
+                </div>
+                <div class="glass-card p-4 rounded-2xl flex flex-col">
+                    <div class="pb-3 border-b border-slate-800 mb-3 flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase text-emerald-400">Completed</span>
+                    </div>
+                    <div id="col-done" class="space-y-3 min-h-[220px]"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SUITE 7: MATH & UNIT UTILITIES ================= -->
+        <section id="suite-math" class="suite-section hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
+                <div>
+                    <h2 class="text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                        <i class="fa-solid fa-calculator text-violet-400"></i> Math & Unit Utilities
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">PX to REM converter, Percentage engine, and Data converters.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Data Converter -->
+                <div class="glass-card p-5 rounded-2xl space-y-3">
+                    <h3 class="text-xs font-bold uppercase text-violet-400">Data Storage Converter</h3>
+                    <div class="space-y-2 text-xs">
+                        <label class="text-slate-400">Megabytes (MB)</label>
+                        <input type="number" id="conv-mb" value="1024" class="w-full p-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-200">
+                        <div class="pt-2 text-slate-300 space-y-1">
+                            <p>Gigabytes: <span id="res-gb" class="font-bold text-violet-400">1.00 GB</span></p>
+                            <p>Kilobytes: <span id="res-kb" class="font-bold text-violet-400">1048576 KB</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PX to REM -->
+                <div class="glass-card p-5 rounded-2xl space-y-3">
+                    <h3 class="text-xs font-bold uppercase text-violet-400">PX to REM Converter</h3>
+                    <div class="space-y-2 text-xs">
+                        <label class="text-slate-400">Pixels (PX)</label>
+                        <input type="number" id="conv-px" value="24" class="w-full p-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-200">
+                        <p class="pt-2 text-slate-300">REM Result: <span id="res-rem" class="font-bold text-violet-400">1.500rem</span></p>
+                    </div>
+                </div>
+
+                <!-- Percentage Engine -->
+                <div class="glass-card p-5 rounded-2xl space-y-3">
+                    <h3 class="text-xs font-bold uppercase text-violet-400">Percentage Engine</h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="pct-a" value="20" class="w-16 p-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-200">
+                            <span class="text-slate-400">% of</span>
+                            <input type="number" id="pct-b" value="150" class="w-full p-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-200">
+                        </div>
+                        <p class="pt-2 text-slate-300">Result: <span id="res-pct" class="font-bold text-violet-400">30.00</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Task Modal -->
+    <div id="task-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-6 rounded-2xl space-y-4 border border-slate-800">
+            <h3 class="text-base font-bold text-white">Create New Task</h3>
+            <div class="space-y-3">
+                <input type="text" id="modal-task-title" placeholder="Task Title..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 focus:outline-none">
+                <textarea id="modal-task-desc" placeholder="Details..." class="w-full h-20 bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 resize-none focus:outline-none"></textarea>
+                <select id="modal-task-status" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200">
+                    <option value="todo">To Do</option>
+                    <option value="inprogress">In Progress</option>
+                    <option value="done">Completed</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button id="modal-close-btn" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800">Cancel</button>
+                <button id="modal-save-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-white">Save Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Engine Scripting -->
+    <script>
+        // ================= 1. INTERACTIVE CUSTOM CURSOR WITH LERP =================
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorRing = document.getElementById('cursor-ring');
+        
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let ringX = mouseX;
+        let ringY = mouseY;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
+        });
+
+        // Smooth ring trailing physics (Linear Interpolation)
+        function renderCursor() {
+            ringX += (mouseX - ringX) * 0.18;
+            ringY += (mouseY - ringY) * 0.18;
+            cursorRing.style.left = `${ringX}px`;
+            cursorRing.style.top = `${ringY}px`;
+            requestAnimationFrame(renderCursor);
+        }
+        renderCursor();
+
+        // Attach Hover Morph effect to interactive elements
+        function initCursorHoverListeners() {
+            const hoverables = document.querySelectorAll('button, a, input, select, textarea, .glass-card');
+            hoverables.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+            });
+        }
+        initCursorHoverListeners();
+
+
+        // ================= 2. CANVAS ANIMATED BACKGROUND (3D RINGS & PARTICLES) =================
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Particle System Setup
+        const particles = Array.from({ length: 45 }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            radius: Math.random() * 2 + 1,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            alpha: Math.random() * 0.5 + 0.2
+        }));
+
+        // Dynamic Spinning Geometric Rings Setup
+        let angleRing1 = 0;
+        let angleRing2 = 0;
+
+        function animateBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Floating Particles
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(99, 102, 241, ${p.alpha})`;
+                ctx.fill();
+            });
+
+            // Draw Rotating 3D Geometric Ring 1 (Top-Right Ambient)
+            ctx.save();
+            ctx.translate(canvas.width * 0.85, canvas.height * 0.25);
+            ctx.rotate(angleRing1);
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 140, 50, Math.PI / 4, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(6, 182, 212, 0.15)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            // Draw Rotating 3D Geometric Ring 2 (Bottom-Left Ambient)
+            ctx.save();
+            ctx.translate(canvas.width * 0.15, canvas.height * 0.8);
+            ctx.rotate(-angleRing2);
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 180, 70, -Math.PI / 3, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(236, 72, 153, 0.12)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+
+            angleRing1 += 0.003;
+            angleRing2 += 0.002;
+
+            requestAnimationFrame(animateBackground);
+        }
+        animateBackground();
+
+
+        // ================= 3. SYSTEM TOAST NOTIFICATIONS =================
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `px-4 py-3 rounded-xl shadow-2xl text-xs font-bold text-white flex items-center gap-2 pointer-events-auto transition-all transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-indigo-600' : 'bg-rose-600'}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${msg}`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 2200);
+        }
+
+        // Safe Clipboard Copy Helper Function for iframe permission restrictions
+        function safeCopyText(textToCopy) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).catch(() => {
+                    fallbackCopyText(textToCopy);
+                });
+            } else {
+                fallbackCopyText(textToCopy);
+            }
+        }
+
+        function fallbackCopyText(textToCopy) {
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+
+        // ================= 4. NAVIGATION & SEARCH =================
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.suite-section');
+        const sidebar = document.getElementById('sidebar');
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.dataset.target;
+                navBtns.forEach(b => b.classList.remove('nav-tab-active'));
+                btn.classList.add('nav-tab-active');
+
+                sections.forEach(s => s.id === target ? s.classList.remove('hidden') : s.classList.add('hidden'));
+                sidebar.classList.add('-translate-x-full');
+            });
+        });
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+        document.getElementById('close-sidebar-btn').addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+
+        document.getElementById('tool-search').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            navBtns.forEach(btn => {
+                const text = btn.innerText.toLowerCase();
+                btn.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        });
+
+
+        // ================= 5. SUITE 1: AI STUDIO =================
+        const aiTemplates = {
+            blog: "Title: Deep Dive into [Topic]\n\n## Summary\nExploring core paradigms of [Topic]...\n\n## Action Plan\n1. Strategy 1\n2. Implementation 2",
+            email: "Subject: Strategic thoughts on [Topic]\n\nHi [Name],\n\nI reviewed [Topic] and formulated key opportunities...",
+            code: "// Refactored System Logic for [Topic]\nfunction optimizeArchitecture() {\n  return 'System Optimized';\n}",
+            social: "🚀 Key insights on [Topic]!\n\nCheck out this breakdown 👇 #TechTrends"
+        };
+
+        document.getElementById('ai-generate-btn').addEventListener('click', () => {
+            const template = document.getElementById('ai-template-select').value;
+            const topic = document.getElementById('ai-topic').value || 'Artificial Intelligence Workflows';
+            const output = aiTemplates[template] ? aiTemplates[template].replaceAll('[Topic]', topic) : `High-performance strategic prompt for ${topic}.`;
+            document.getElementById('ai-output').value = output;
+            showToast('AI prompt architecture generated!');
+        });
+
+        document.getElementById('ai-copy-btn').addEventListener('click', () => {
+            safeCopyText(document.getElementById('ai-output').value);
+            showToast('Copied to clipboard!');
+        });
+
+
+        // ================= 6. SUITE 2: SEO ANALYZER =================
+        const seoInput = document.getElementById('seo-input');
+        seoInput.addEventListener('input', () => {
+            const text = seoInput.value;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const chars = text.length;
+            const sentences = text.split(/[.!?]+/).filter(Boolean).length;
+            
+            document.getElementById('stat-words').innerText = words;
+            document.getElementById('stat-chars').innerText = chars;
+            document.getElementById('stat-sentences').innerText = sentences;
+            document.getElementById('stat-read').innerText = `${Math.ceil(words / 200)} min`;
+
+            if (!words) return;
+            const freq = {};
+            text.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, '').split(/\s+/).filter(w => w.length > 2).forEach(w => freq[w] = (freq[w] || 0) + 1);
+            const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            document.getElementById('keyword-table-body').innerHTML = sorted.map(([word, count]) => `
+                <tr>
+                    <td class="py-1 font-semibold">${word}</td>
+                    <td class="py-1 text-center">${count}</td>
+                    <td class="py-1 text-right font-mono text-cyan-400">${((count/words)*100).toFixed(1)}%</td>
+                </tr>
+            `).join('');
+        });
+
+        document.getElementById('clean-upper').addEventListener('click', () => { seoInput.value = seoInput.value.toUpperCase(); seoInput.dispatchEvent(new Event('input')); });
+        document.getElementById('clean-lower').addEventListener('click', () => { seoInput.value = seoInput.value.toLowerCase(); seoInput.dispatchEvent(new Event('input')); });
+        document.getElementById('clean-spaces').addEventListener('click', () => { seoInput.value = seoInput.value.replace(/\s+/g, ' '); seoInput.dispatchEvent(new Event('input')); });
+
+
+        // ================= 7. SUITE 3: DEVELOPER POWER HUB =================
+        document.querySelectorAll('.dev-sub-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.dev-sub-tab').forEach(t => t.className = 'dev-sub-tab pb-2 text-xs font-bold text-slate-400 hover:text-slate-200');
+                tab.className = 'dev-sub-tab pb-2 text-xs font-bold text-indigo-400 border-b-2 border-indigo-500';
+                document.querySelectorAll('.dev-sub-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(tab.dataset.sub).classList.remove('hidden');
+            });
+        });
+
+        document.getElementById('json-format-btn').addEventListener('click', () => {
+            try {
+                const parsed = JSON.parse(document.getElementById('json-input').value);
+                document.getElementById('json-output').value = JSON.stringify(parsed, null, 2);
+            } catch(e) { showToast('Invalid JSON syntax', 'error'); }
+        });
+
+        document.getElementById('btn-base64-enc').addEventListener('click', () => {
+            document.getElementById('encode-output').value = btoa(document.getElementById('encode-input').value);
+        });
+        document.getElementById('btn-base64-dec').addEventListener('click', () => {
+            try { document.getElementById('encode-output').value = atob(document.getElementById('encode-input').value); } catch(e) { showToast('Invalid Base64', 'error'); }
+        });
+
+        // CSS Gradient
+        const c1 = document.getElementById('grad-c1');
+        const c2 = document.getElementById('grad-c2');
+        const deg = document.getElementById('grad-deg');
+        function updateGrad() {
+            const css = `linear-gradient(${deg.value}deg, ${c1.value}, ${c2.value})`;
+            document.getElementById('grad-preview').style.background = css;
+            document.getElementById('grad-css').value = `background: ${css};`;
+            document.getElementById('grad-deg-text').innerText = `${deg.value}°`;
+        }
+        [c1, c2, deg].forEach(e => e.addEventListener('input', updateGrad));
+        updateGrad();
+
+        document.getElementById('grad-copy-btn').addEventListener('click', () => {
+            safeCopyText(document.getElementById('grad-css').value);
+            showToast('Gradient CSS copied!');
+        });
+
+
+        // ================= 8. SUITE 4: SECURITY SUITE =================
+        function genPassword() {
+            const len = document.getElementById('pass-len').value;
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+            let res = "";
+            for(let i=0; i<len; i++) res += chars.charAt(Math.floor(Math.random()*chars.length));
+            document.getElementById('pass-output').value = res;
+        }
+        document.getElementById('pass-len').addEventListener('input', (e) => {
+            document.getElementById('pass-len-val').innerText = e.target.value;
+            genPassword();
+        });
+        document.getElementById('pass-gen-btn').addEventListener('click', genPassword);
+        document.getElementById('pass-copy-btn').addEventListener('click', () => {
+            safeCopyText(document.getElementById('pass-output').value);
+            showToast('Password copied!');
+        });
+        genPassword();
+
+        document.getElementById('uuid-gen-btn').addEventListener('click', () => {
+            const uuids = Array.from({length:3}, () => crypto.randomUUID()).join('\n');
+            document.getElementById('uuid-output').value = uuids;
+            showToast('Generated UUIDs!');
+        });
+
+
+        // ================= 9. SUITE 5: PALETTE LAB =================
+        function genPalette() {
+            const container = document.getElementById('palette-container');
+            container.innerHTML = '';
+            for(let i=0; i<5; i++) {
+                const hex = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                const card = document.createElement('div');
+                card.className = "p-3 rounded-xl border border-slate-800 space-y-2 hover:scale-105 transition-all";
+                card.innerHTML = `<div class="h-20 rounded-lg shadow-inner" style="background:${hex}"></div><p class="text-center font-mono text-xs font-bold text-slate-200">${hex}</p>`;
+                card.onclick = () => { safeCopyText(hex); showToast(`Copied ${hex}`); };
+                container.appendChild(card);
+            }
+            initCursorHoverListeners();
+        }
+        document.getElementById('palette-gen-btn').addEventListener('click', genPalette);
+        genPalette();
+
+
+        // ================= 10. SUITE 6: KANBAN & POMODORO =================
+        let tasks = JSON.parse(localStorage.getItem('omnipro_tasks_v4') || '[]');
+        const taskModal = document.getElementById('task-modal');
+        document.getElementById('add-task-btn').addEventListener('click', () => taskModal.classList.remove('hidden'));
+        document.getElementById('modal-close-btn').addEventListener('click', () => taskModal.classList.add('hidden'));
+
+        document.getElementById('modal-save-btn').addEventListener('click', () => {
+            const title = document.getElementById('modal-task-title').value;
+            const desc = document.getElementById('modal-task-desc').value;
+            const status = document.getElementById('modal-task-status').value;
+            if(!title) return;
+            tasks.push({ id: Date.now(), title, desc, status });
+            localStorage.setItem('omnipro_tasks_v4', JSON.stringify(tasks));
+            renderTasks();
+            taskModal.classList.add('hidden');
+            showToast('Task saved!');
+        });
+
+        function renderTasks() {
+            const cols = { todo: document.getElementById('col-todo'), inprogress: document.getElementById('col-inprogress'), done: document.getElementById('col-done') };
+            Object.values(cols).forEach(c => c.innerHTML = '');
+            tasks.forEach(t => {
+                const el = document.createElement('div');
+                el.className = "p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1.5";
+                el.innerHTML = `
+                    <div class="flex justify-between items-center"><h5 class="text-xs font-bold text-white">${t.title}</h5><button onclick="delTask(${t.id})" class="text-slate-500 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button></div>
+                    ${t.desc ? `<p class="text-[11px] text-slate-400">${t.desc}</p>` : ''}
+                `;
+                cols[t.status].appendChild(el);
+            });
+            initCursorHoverListeners();
+        }
+        window.delTask = (id) => {
+            tasks = tasks.filter(t => t.id !== id);
+            localStorage.setItem('omnipro_tasks_v4', JSON.stringify(tasks));
+            renderTasks();
+        };
+        renderTasks();
+
+        // Pomodoro Timer Logic
+        let pomoTime = 1500, pomoInterval = null;
+        document.getElementById('pomo-start-btn').addEventListener('click', () => {
+            if(pomoInterval) return;
+            pomoInterval = setInterval(() => {
+                pomoTime--;
+                const m = String(Math.floor(pomoTime/60)).padStart(2,'0');
+                const s = String(pomoTime%60).padStart(2,'0');
+                document.getElementById('pomo-timer-display').innerText = `${m}:${s}`;
+                if(pomoTime <= 0) { clearInterval(pomoInterval); showToast('Focus session complete!'); }
+            }, 1000);
+        });
+        document.getElementById('pomo-pause-btn').addEventListener('click', () => { clearInterval(pomoInterval); pomoInterval = null; });
+        document.getElementById('pomo-reset-btn').addEventListener('click', () => { clearInterval(pomoInterval); pomoInterval = null; pomoTime = 1500; document.getElementById('pomo-timer-display').innerText = "25:00"; });
+
+
+        // ================= 11. SUITE 7: MATH UTILITIES =================
+        document.getElementById('conv-mb').addEventListener('input', (e) => {
+            const mb = parseFloat(e.target.value) || 0;
+            document.getElementById('res-gb').innerText = `${(mb/1024).toFixed(2)} GB`;
+            document.getElementById('res-kb').innerText = `${(mb*1024).toFixed(0)} KB`;
+        });
+        document.getElementById('conv-px').addEventListener('input', (e) => {
+            document.getElementById('res-rem').innerText = `${((parseFloat(e.target.value)||0)/16).toFixed(3)}rem`;
+        });
+        function calcPct() {
+            const a = parseFloat(document.getElementById('pct-a').value)||0;
+            const b = parseFloat(document.getElementById('pct-b').value)||0;
+            document.getElementById('res-pct').innerText = ((a/100)*b).toFixed(2);
+        }
+        document.getElementById('pct-a').addEventListener('input', calcPct);
+        document.getElementById('pct-b').addEventListener('input', calcPct);
+
+    </script>
+</body>
+</html>
